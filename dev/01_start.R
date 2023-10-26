@@ -47,12 +47,18 @@ usethis::use_code_of_conduct(contact = "Golem User")
 usethis::use_lifecycle_badge("Experimental")
 usethis::use_news_md(open = FALSE)
 
+
+
 ## Use git ----
 usethis::use_git()
 
 ## Init Testing Infrastructure ----
 ## Create a template for tests
 golem::use_recommended_tests()
+
+## this is used to load in data into the application
+usethis::use_data_raw(name = "my_dataset", open = FALSE)
+
 
 ## Favicon ----
 # If you want to change the favicon (default is golem's one)
@@ -62,6 +68,9 @@ golem::use_favicon() # path = "path/to/ico". Can be an online file.
 ## Add helper functions ----
 golem::use_utils_ui(with_test = TRUE)
 golem::use_utils_server(with_test = TRUE)
+
+
+
 
 # You're now set! ----
 
