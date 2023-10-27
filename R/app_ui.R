@@ -5,7 +5,6 @@
 #' @import shiny
 #' @import tidyverse
 #' @import bs4Dash
-#' @import DT
 #' @import skimr
 #' @import shinyWidgets
 #' @noRd
@@ -100,21 +99,6 @@ app_ui <- function(request) {
 
           tabItem(
             tabName = "owndata",  # Content for the "owndata" tab ----
-            fileInput('upload', 'Data file',
-                      placeholder = "No file selected",
-                      accept=c('text/csv',
-                               'text/comma-separated-values,text/plain',
-                               '.csv')),  # File input widget
-            # Input: Checkbox if file has header
-            checkboxInput("header", "Header", TRUE),  # Checkbox for header
-            # Quotes
-            selectInput(inputId = "upload2_quote",
-                        label =  "Quotes",
-                        choices = c('None' = "NULL",
-                                    'Double Quote' = '"',
-                                    'Single Quote' = "'"),
-                        selected = "None"
-            ),
             mod_UI_ui("Borealis")  # Include a UI element for the "Borealis" tab
           )
         )

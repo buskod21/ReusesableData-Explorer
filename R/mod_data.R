@@ -7,6 +7,9 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom DT datatable renderDataTable dataTableOutput
+#' @import skimr
+#' @import dplyr
 mod_data_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -37,7 +40,7 @@ mod_data_ui <- function(id){
 #' data Server Functions
 #'
 #' @noRd
-mod_data_server <- function(id,exampleMeta){
+mod_data_server <- function(id, exampleData){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     # Render and output raw data and summary
@@ -45,22 +48,34 @@ mod_data_server <- function(id,exampleMeta){
     ## Input and read data
 
     data <- reactive({
-      req(exampleMeta())
-      path <- file.path("data-raw",paste0("cow", exampleMeta(), "Cant1997.csv"))
+      req(exampleData())
+      path <- file.path("data", paste0(exampleData(), ".rda"))
 
-      df <- read.csv(path,
-                     sep = ",",
-                     header = T
-      )
-      df <- df %>%
+      # Load the .rda
+      if (file.exists(path)) {
+        df <- load(path)
+        df <- get(df)
+
+        #Optionally, you can modify the data here (e.g., converting columns to factors)
+        df <- df %>%
         mutate(across(1:5, as.factor))
 
-
-      return(df)
+        return(df)
+        } else {
+          # Handle the case where the file doesn't exist
+        return(NULL)
+      }
     })
 
 
-    output$rawtable <- OutputTableRender(data())
+    output$rawtable <- renderDataTable({
+    datatable(data(),
+              rownames = FALSE,
+              options = list(dom = "tp",
+                             autoWidth = FALSE,
+                             scrollX = TRUE))
+  })
+
 
     #output summary statistics
     output$summary <- renderPrint({

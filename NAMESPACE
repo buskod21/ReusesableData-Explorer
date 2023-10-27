@@ -3,6 +3,8 @@
 export(run_app)
 import(DT)
 import(bs4Dash)
+import(dplyr)
+import(ggplot2)
 import(shiny)
 import(shinyWidgets)
 import(skimr)

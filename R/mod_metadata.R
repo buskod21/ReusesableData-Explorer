@@ -37,7 +37,7 @@ mod_metadata_ui <- function(id){
 #' metadata Server Functions
 #'
 #' @noRd
-mod_metadata_server <- function(id){
+mod_metadata_server <- function(id, exampleData){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -45,14 +45,15 @@ mod_metadata_server <- function(id){
 
       req(exampleData)
 
-      filename <- list.files("data", pattern = paste0(exampleData, "Meta"))
-
-      print(filename)
+      filename <- list.files("data", pattern = paste0(exampleData(),"Meta"))
 
       if (length(filename) == 0) {
+
         # Handle the case when no matching file is found
         print("File not found")
         return(NULL)  # Or handle the error as needed
+
+        loaded_data <- load(file.path("data", filename))
       }
 
       # Assuming there's only one matching file, load the data
@@ -64,9 +65,9 @@ mod_metadata_server <- function(id){
       return(loaded_data)
     })
 
-    observe(print(metaData()))
 
-    # Render a data table for metadata
+
+    #Render a data table for metadata
     output$meta <- renderDataTable({
       datatable(metaData()[1:7,],
                 rownames = FALSE,
@@ -76,7 +77,8 @@ mod_metadata_server <- function(id){
                                scrollX = TRUE))
     })
 
-    # Render a data table for metadata
+
+    # Render a data table for data schema
     output$schema <- renderDataTable({
       datatable(metaData()[8:13,],
                 rownames = FALSE,
@@ -85,54 +87,6 @@ mod_metadata_server <- function(id){
                                autoWidth = FALSE,
                                scrollX = TRUE))
     })
-
-
-    # # # Define a function to create metadata
-    # # CreateMetaData <- function(name, DoU, exampleData) {
-    # #   if (DoU == FALSE){
-    # #     filename <- list.files("data", pattern = paste0(exampleData,name))
-    # #     return(filename)
-    # #   } else {
-    # #     return(
-    # #       UserMeta <- read.table(
-    # #         text = gsub("=", ":", readLines(uploadMeta)),
-    # #         sep = ":")
-    # #     )
-    # #   }
-    # # }
-    # # Create metadata based on the selected dataset and options
-    # metadata <- reactive({
-    #   #   req(input$dataset)
-    #   #   filename <- list.files("data", pattern = paste0(exampleData, "Meta"))
-    #   #   load(file.path("data", filename))
-    #   CreateMetaData("Meta", FALSE, exampleData)
-    #   #   read.table(text = gsub("=", ":",
-    #   #                          readLines("inst/extdata/A100_README_Cant et al_cowFattyAcid_1997_20210922.txt")), sep =  ":")
-    # })
-    #
-    # # Render a data table for metadata
-    # output$meta <- renderDataTable({
-    #   req(metadata())  # Ensure that metadata is available
-    #   datatable(metadata()[1:7,],
-    #             rownames = FALSE,
-    #             colnames = c("Keys", "Values"),
-    #             options = list(dom = "tp",
-    #                            autoWidth = FALSE,
-    #                            scrollX = TRUE)
-    #   )
-    # })
-    #
-    # # Render a data table for data schema
-    # output$schema <- renderDataTable({
-    #   req(metadata())  # Ensure that metadata is available
-    #   datatable(metadata()[8:13,],
-    #             rownames = FALSE,
-    #             colnames = c("Keys", "Values"),
-    #             options = list(dom = "tp",
-    #                            autoWidth = FALSE,
-    #                            scrollX = TRUE)
-    #   )
-    # })
 
   })
 }

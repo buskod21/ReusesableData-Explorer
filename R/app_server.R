@@ -7,7 +7,5 @@
 app_server <- function(input, output, session) {
   # Your application server logic
 
-
-
-  mod_example_ui("example_1")
+  mod_example_server("example_1")
 }
